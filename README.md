@@ -1,6 +1,6 @@
 # docker-cheatsheet
 
-### Lancement d'un container à partir d'une image
+### Disk management
 
 `docker container run [opt] (image:tag) [command] [args]` Lance un container à partir d'une image
 
@@ -17,80 +17,26 @@
 * `--restart=[on-failure | always]` redémarrage automatique du container
 * `--network [reseau]` indique le réseau par défaut sur lequel se connecter
 
-### Gestion des volumes
+## Package management
 
-`docker volume ls` Liste les volumes existants
+### APT
 
-`docker volume create (volume)` Créer un volume nommé
 
-### Gestion des réseaux
+### DNF
 
-`docker network ls` Liste les réseaux disponibles
+Configurations files :
+* /etc/dnf/dnf.conf : Generic DNF configuration
+* /etc/yum.repos.d/ : Repositories configuration
 
-`docker network create (reseau)` Créer un réseau
+`dnf check-update` Check for updates on installed packages
 
-`docker network connect (reseau) (container)` Connecte un container à un réseau
+`dnf upgrade` Update all the installed packages
 
-### Construction d'une image
+`dnf search <keyword>` Search for packages with keyword in its name
 
-`docker image build [opt] (path | url | -)` Construit une image à partir d'un Dockerfile
+`dnf install <package-name>` Install this package
 
-* `-t (image:tag)` avec un tag spécifique
+`dnf install <https://<url-to-the-repo.com/repo.rpm>` Install this repository to get access to its packages
 
-`docker image pull (image:tag)` Récupère une image du dépôt
+`dnf remove <package-name>` Install this package
 
-`docker image push (image:tag)` Envoie une image sur le dépôt
-
-`docker image ls` Liste les images récupérées
-
-`docker image rm (image:tag)` Supprime une image en local
-
-`docker commit [opt] container (image:tag)` Sauvegarde l'état actuel d'un container dans une image
-
-`docker tag (image:tag) (repo/image:tag)` Créé un nouveau tag avec namespace pour déposer l'image sur le dépôt
-
-`docker search (critere)` Recherche sur le dépôt une image à partir de mots-clés
-
-### Administration des containers
-
-`docker container ls [opt]` Liste les containers en cours d'exécution
-
-* `-q` indique seulement les id
-* `-a` liste aussi les containers arrêtés
-
-`docker container logs [opt] (container)` Indique les logs d'un container
-
-* `-f` avec suivi
-
-`docker container inspect [opt] (container)` Affiche les caractéristiques d'un container (JSON)
-
-* `-f [pattern]` Indique une part de l'arbre JSON via GoTemplate. Ex : -f '{{ .Name }}'
-
-`docker container exec -it (container) /bin/sh` Lance un shell interactif dans un container en cours d'exécution
-
-`docker container run -it -v (chemin asbolu hôte):(chemin absolu container) (image:tag) /bin/sh` Lance un shell interactif avec l'image donné en montant un répertoire
-
-`docker container (start | stop | rm | kill) [opt] (container)`
-
-* `-f` force les container en cours d'exécution
-* container : id/nom d'un container, ou liste d'ids via $(docker container -q)
-
-### Dockerfile
-
-FROM image:tag [as alias]
-
-COPY [--from=alias] : copie un fichier
-
-ADD : copie un fichier, peut télécharger via une URL, désarchive automatiquement les .tar.gz
-
-VOLUME : persiste un dossier sur l'hôte
-
-USER :
-
-HEALTHCHECK :
-
-### Misc
-
-`docker container run --net=host --ipc=host --uts=host --pid=host -it --security-opt=seccomp=unconfined --privileged --rm -v /:/host alpine /bin/sh` Depuis Windows, pour se connecter à la VM hébergeant le daemon Docker
-
-`docker container run -d (container) tail -f` Permet de lancer un container en arrière-plan avec une commande "sans fin"
